@@ -141,17 +141,18 @@ Comportement important
 .
 ├── server.js
 ├── package.json
-├── controllers/
-│   └── taskController.js
-├── models/
-│   └── task.js
-├── routes/
-│   └── tasks.js
+├── src/
+│   ├── controllers/
+│   │   └── taskController.js
+│   ├── models/
+│   │   └── task.js
+│   └── routes/
+│       └── tasks.js
 └── README.md
 ```
 
 - **server.js** : point d'entrée, configuration Express, middleware, et montage des routes.  
-- **routes/tasks.js** : routage HTTP pour `/tasks`.  
-- **controllers/taskController.js** : logique métier et gestion des réponses HTTP.  
-- **models/task.js** : classes `Task` et `TaskManager` (stockage en mémoire, méthodes add, list, delete).  
+- **src/routes/tasks.js** : routage HTTP pour `/tasks`.  
+- **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP.  
+- **src/models/task.js** : classes `Task` et `TaskManager` (stockage en mémoire, méthodes add, list, delete).  
 - **package.json** : dépendances et scripts.
