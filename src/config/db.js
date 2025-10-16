@@ -1,47 +1,25 @@
-const mongoose = require('mongoose');
+require('dotenv').config();
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    database: process.env.PGDATABASE,
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+});
 
 async function connectToDatabase() {
-    const defaultUri = 'mongodb://127.0.0.1:27017/B3_Back-end_Exercice_2';
-    const mongoUri = process.env.MONGO_URI || defaultUri;
-
-    // Options recommandées pour Mongoose
-    const options = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000,
-    };
-
-    // Déjà connecté
-    if (mongoose.connection.readyState === 1) {
-        console.log('MongoDB: déjà connecté');
-        return mongoose.connection;
-    }
-
-    // Connexion en cours
-    if (mongoose.connection.readyState === 2) {
-        console.log('MongoDB: connexion en cours...');
-        return mongoose.connection.asPromise();
-    }
-
     try {
-        const conn = await mongoose.connect(mongoUri, options);
-        console.log(`MongoDB connecté: ${mongoUri}`);
-
-        // Écouteurs d'événements basiques pour faciliter le debug
-        mongoose.connection.on('error', (err) => {
-            console.error('MongoDB erreur de connexion:', err);
-        });
-
-        mongoose.connection.on('disconnected', () => {
-            console.warn('MongoDB déconnecté');
-        });
-
-        return conn;
-    } catch (error) {
-        console.error('MongoDB échec de connexion:', error);
-        // Propager l'erreur pour que l'appelant puisse la gérer
-        throw error;
+        await pool.query('SELECT 1');
+        console.log('✅ PostgreSQL connecté');
+    } catch (err) {
+        console.error('❌ Erreur de connexion PostgreSQL:', err.message || err);
+        throw err;
     }
 }
 
-module.exports = { connectToDatabase };
+module.exports = { pool, connectToDatabase };
