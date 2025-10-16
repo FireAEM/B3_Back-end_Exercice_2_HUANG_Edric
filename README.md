@@ -4,7 +4,10 @@
 
 ### Présentation
 
-Mini API ToDoList en Node.js organisée selon le modèle MVC. Fonctionnalités : ajout, affichage et suppression de tâches en mémoire via une API REST simple construite avec Express, CORS et dotenv.
+Mini API ToDoList en Node.js organisée selon le modèle MVC.  
+Fonctionnalités : ajout, affichage et suppression de tâches via une API REST simple construite avec **Express**, **CORS**, **dotenv** et **PostgreSQL**.  
+
+La base de données PostgreSQL est utilisée pour stocker les tâches de manière persistante.
 
 ---
 
@@ -13,12 +16,12 @@ Mini API ToDoList en Node.js organisée selon le modèle MVC. Fonctionnalités :
 - [Prérequis](#prérequis)
 - [Dépendances principales](#dépendances-principales)
 - [Installation et configuration](#installation-et-configuration)
+- [Configuration PostgreSQL](#configuration-postgresql)
 - [Exécution](#exécution)
   - [Développement](#développement)
   - [Production simple](#production-simple)
 - [API Endpoints](#api-endpoints)
 - [Structure du projet](#structure-du-projet)
-- [Bonnes pratiques et améliorations possibles](#bonnes-pratiques-et-améliorations-possibles)
 
 ---
 
@@ -26,6 +29,8 @@ Mini API ToDoList en Node.js organisée selon le modèle MVC. Fonctionnalités :
 
 - Node.js installé (version 16+ recommandée).  
 - npm fourni avec Node.js.  
+- PostgreSQL installé (version 14+ recommandée).  
+- pgAdmin 4 pour gérer la base de données.  
 - Ligne de commande (Terminal, PowerShell, Bash).  
 - (Optionnel) Un client HTTP pour tester : curl, httpie ou Postman.
 
@@ -36,6 +41,7 @@ Mini API ToDoList en Node.js organisée selon le modèle MVC. Fonctionnalités :
 - express : framework web minimaliste
 - cors : gestion des politiques CORS
 - dotenv : gestion des variables d’environnement
+- pg : client officiel PostgreSQL pour Node.js
 - nodemon (dev) : rechargement automatique en développement
 
 ---
@@ -57,9 +63,18 @@ npm install
 ```
 PORT=3000
 NODE_ENV=development
+PGHOST=127.0.0.1
+PGPORT=5432
+PGDATABASE=b3_back-end_exercice_2
+PGUSER=postgres
+PGPASSWORD={motdepasse}
 ```
-- **PORT** : port d'écoute du serveur.  
-- **NODE_ENV** : indique l'environnement (development ou production).
+- **PORT** : port d'écoute du serveur.
+- **PGHOST** : hôte PostgreSQL (127.0.0.1 en local).
+- **PGPORT** : port PostgreSQL (5432 par défaut).
+- **PGDATABASE** : nom de la base de données.
+- **PGUSER** : utilisateur PostgreSQL.
+- **PGPASSWORD** : mot de passe de l’utilisateur.
 
 4. Scripts utiles dans package.json (exemple) :
 ```json
@@ -70,6 +85,25 @@ NODE_ENV=development
 ```
 - `npm run dev` lance le serveur avec nodemon pour rechargement automatique en développement.  
 - `npm start` lance la version simple sans nodemon.
+
+---
+
+### Configuration PostgreSQL
+
+1. **Créer la base de données** avec pgAdmin 4 :  
+   - Nom : `b3_back-end_exercice_2`  
+   - Owner : `postgres` (ou un utilisateur dédié).  
+
+2. **Créer la table `tasks`** (via Query Tool dans pgAdmin) :
+```sql
+CREATE TABLE IF NOT EXISTS tasks (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+3. Vérifier que la table est bien créée dans la base.
 
 ---
 
@@ -129,10 +163,6 @@ Base : http://localhost:3000
     curl -X DELETE http://localhost:3000/tasks/1
     ```
 
-Comportement important
-- Les tâches sont stockées **en mémoire** dans une instance de `TaskManager`. Redémarrer le serveur réinitialise la liste.  
-- Réponses JSON et codes HTTP cohérents pour faciliter l'utilisation par des clients.
-
 ---
 
 ### Structure du projet
@@ -142,6 +172,8 @@ Comportement important
 ├── server.js
 ├── package.json
 ├── src/
+│   ├── config/
+│   │   └── db.js
 │   ├── controllers/
 │   │   └── taskController.js
 │   ├── models/
@@ -151,8 +183,9 @@ Comportement important
 └── README.md
 ```
 
-- **server.js** : point d'entrée, configuration Express, middleware, et montage des routes.  
+- **server.js** : point d'entrée, configuration Express, middleware, montage des route et démarrage conditionné à la connexion DB.
+- **src/config/db.js** : configuration et connexion PostgreSQL.
+- **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP.
+- **src/models/task.js** : classe `Task` (requêtes SQL create, list, delete).
 - **src/routes/tasks.js** : routage HTTP pour `/tasks`.  
-- **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP.  
-- **src/models/task.js** : classes `Task` et `TaskManager` (stockage en mémoire, méthodes add, list, delete).  
 - **package.json** : dépendances et scripts.
