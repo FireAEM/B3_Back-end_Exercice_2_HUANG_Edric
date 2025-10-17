@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    h1 ToDoList
+
+    //- section d'ajout
+    form(action="/tasks" method="post")
+        input(type="text" name="title" placeholder="Nouvelle tâche" required)
+        button(type="submit") Ajouter
+
+    //- liste des tâches (si fournie par le contrôleur)
+    if tasks && tasks.length
+        ul
+            each task in tasks
+                li
+                    | #{task.title} 
+                    form(action=`/tasks/${task.id}?_method=DELETE` method="post" style="display:inline")
+                        button(type="submit") Supprimer
+    else
+        p Aucune tâche pour le moment.

@@ -19,6 +19,11 @@ async function createTaskHandler(req, res) {
         }
 
         const task = await Task.createTask(title);
+
+        if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+            return res.redirect('/');
+        }
+
         res.status(201).json(task);
     } catch (error) {
         console.error('Erreur createTaskHandler:', error);
@@ -35,8 +40,16 @@ async function deleteTaskHandler(req, res) {
             if (!/^[0-9a-fA-F]{24}$/.test(rawId)) {
                 return res.status(400).json({ error: 'ID MongoDB invalide.' });
             }
+
             const ok = await Task.deleteTaskById(rawId);
-            if (!ok) return res.status(404).json({ error: 'ID introuvable.' });
+            if (!ok) {
+                return res.status(404).json({ error: 'ID introuvable.' });
+            }
+
+            if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+                return res.redirect('/');
+            }
+
             return res.status(200).json({ message: 'Tâche supprimée.' });
         }
 
@@ -49,6 +62,10 @@ async function deleteTaskHandler(req, res) {
         const ok = await Task.deleteTaskById(id);
         if (!ok) {
             return res.status(404).json({ error: 'ID introuvable.' });
+        }
+
+        if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+            return res.redirect('/');
         }
 
         res.status(200).json({ message: 'Tâche supprimée.' });
