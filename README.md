@@ -5,9 +5,11 @@
 ### Présentation
 
 Mini API ToDoList en Node.js organisée selon le modèle MVC.  
-Fonctionnalités : ajout, affichage et suppression de tâches via une API REST simple construite avec **Express**, **CORS**, **dotenv** et **PostgreSQL**.  
+Fonctionnalités : ajout, affichage et suppression de tâches via une API REST simple construite avec **Express**, **CORS**, **dotenv**, **PostgreSQL** et **MongoDB**.
 
-La base de données PostgreSQL est utilisée pour stocker les tâches de manière persistante.
+La base de données utilisée est choisie via la variable d’environnement **`DB_CLIENT`** (`postgres` ou `mongo`).
+- Avec **PostgreSQL**, les tâches sont stockées dans une table SQL.
+- Avec **MongoDB**, les tâches sont stockées dans une collection.
 
 ---
 
@@ -17,6 +19,7 @@ La base de données PostgreSQL est utilisée pour stocker les tâches de manièr
 - [Dépendances principales](#dépendances-principales)
 - [Installation et configuration](#installation-et-configuration)
 - [Configuration PostgreSQL](#configuration-postgresql)
+- [Configuration MongoDB](#configuration-mongodb)
 - [Exécution](#exécution)
   - [Développement](#développement)
   - [Production simple](#production-simple)
@@ -27,11 +30,12 @@ La base de données PostgreSQL est utilisée pour stocker les tâches de manièr
 
 ### Prérequis
 
-- Node.js installé (version 16+ recommandée).  
-- npm fourni avec Node.js.  
-- PostgreSQL installé (version 14+ recommandée).  
-- pgAdmin 4 pour gérer la base de données.  
-- Ligne de commande (Terminal, PowerShell, Bash).  
+- Node.js installé (version 16+ recommandée).
+- npm fourni avec Node.js.
+- PostgreSQL installé (version 14+ recommandée).
+- MongoDB Community Server.
+- pgAdmin 4 pour PostgreSQL et MongoDB Compass pour MongoDB.
+- Ligne de commande (Terminal, PowerShell, Bash).
 - (Optionnel) Un client HTTP pour tester : curl, httpie ou Postman.
 
 ---
@@ -42,6 +46,7 @@ La base de données PostgreSQL est utilisée pour stocker les tâches de manièr
 - cors : gestion des politiques CORS
 - dotenv : gestion des variables d’environnement
 - pg : client officiel PostgreSQL pour Node.js
+- mongoose : ODM pour MongoDB
 - nodemon (dev) : rechargement automatique en développement
 
 ---
@@ -63,18 +68,28 @@ npm install
 ```
 PORT=3000
 NODE_ENV=development
+
+# PostgreSQL
 PGHOST=127.0.0.1
 PGPORT=5432
 PGDATABASE=b3_back-end_exercice_2
 PGUSER=postgres
 PGPASSWORD={motdepasse}
+
+# MongoDB
+MONGO_URI=mongodb://127.0.0.1:27017/B3_Back-end_Exercice_2
+
+# Choix du client : "postgres" ou "mongo"
+DB_CLIENT=postgres
 ```
-- **PORT** : port d'écoute du serveur.
+- **PORT** : port d’écoute du serveur Express (API).
 - **PGHOST** : hôte PostgreSQL (127.0.0.1 en local).
 - **PGPORT** : port PostgreSQL (5432 par défaut).
-- **PGDATABASE** : nom de la base de données.
+- **PGDATABASE** : nom de la base de données PostgreSQL.
 - **PGUSER** : utilisateur PostgreSQL.
-- **PGPASSWORD** : mot de passe de l’utilisateur.
+- **PGPASSWORD** : mot de passe de l’utilisateur PostgreSQL.
+- **MONGO_URI** : URI de connexion MongoDB.
+- **DB_CLIENT** : permet de choisir la base de données utilisée (`postgres` ou `mongo`).
 
 4. Scripts utiles dans package.json (exemple) :
 ```json
@@ -107,11 +122,20 @@ CREATE TABLE IF NOT EXISTS tasks (
 
 ---
 
+### Configuration MongoDB
+
+1. Installer et lancer MongoDB Community Server.  
+2. Ouvrir **MongoDB Compass** et se connecter à l’URI (par défaut : `mongodb://127.0.0.1:27017`).  
+3. Créer la base `B3_Back-end_Exercice_2` (elle sera créée automatiquement à la première insertion si elle n’existe pas).  
+4. La collection `tasks` est créée automatiquement lors de l’ajout d’une tâche.  
+
+---
+
 ### Exécution
 
 #### Développement
 
-1. Vérifier que `.env` est en place.  
+1. Vérifier que `.env` est en place et que `DB_CLIENT` correspond à la base souhaitée.  
 2. Lancer le serveur en mode développement :
 ```bash
 npm run dev
@@ -158,9 +182,16 @@ Base : http://localhost:3000
   - Paramètre : `id` en URL, doit être un entier.  
   - Réponse : **200 OK** si supprimée avec message de confirmation  
   - Erreur : **404 Not Found** si l'ID n'existe pas ; **400 Bad Request** si `id` invalide  
-  - Exemple :
+  - ⚠️ **Attention** :  
+    - En PostgreSQL, `id` est un entier.  
+    - En MongoDB, `id` est un ObjectId (24 caractères hexadécimaux).  
+  - Exemple PostgreSQL :
     ```bash
     curl -X DELETE http://localhost:3000/tasks/1
+    ```
+  - Exemple MongoDB :
+    ```bash
+    curl -X DELETE http://localhost:3000/tasks/6530b1f6c0a9a5a5f4c3d2e1
     ```
 
 ---
@@ -184,8 +215,8 @@ Base : http://localhost:3000
 ```
 
 - **server.js** : point d'entrée, configuration Express, middleware, montage des route et démarrage conditionné à la connexion DB.
-- **src/config/db.js** : configuration et connexion PostgreSQL.
+- **src/config/db.js** : configuration et connexion PostgreSQL/MongoDB.
 - **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP.
-- **src/models/task.js** : classe `Task` (requêtes SQL create, list, delete).
+- **src/models/task.js** : classe `Task` (implémentation PostgreSQL ou MongoDB selon `DB_CLIENT`).
 - **src/routes/tasks.js** : routage HTTP pour `/tasks`.  
 - **package.json** : dépendances et scripts.
