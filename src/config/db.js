@@ -27,7 +27,7 @@ async function connectPostgres() {
 // Connexion MongoDB
 async function connectMongo() {
     try {
-        const mongoUri = process.env.MONGO_URI;
+        const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/B3_Back-end_Exercice_2';
         if (mongoose.connection.readyState === 1) {
             console.log('MongoDB: déjà connecté');
             return;
@@ -42,7 +42,7 @@ async function connectMongo() {
 
 // Fonction générique
 async function connectToDatabase() {
-    const client = (process.env.DB_CLIENT).toLowerCase();
+    const client = (process.env.DB_CLIENT || 'postgres').toLowerCase();
     if (client === 'mongo') {
         return connectMongo();
     }
