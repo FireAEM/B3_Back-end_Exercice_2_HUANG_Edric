@@ -5,7 +5,7 @@
 ### Présentation
 
 Mini API ToDoList en Node.js organisée selon le modèle MVC.  
-Fonctionnalités : ajout, affichage et suppression de tâches via une API REST simple construite avec **Express**, **CORS**, **dotenv**, **PostgreSQL** et **MongoDB**.
+Fonctionnalités : ajout, affichage et suppression de tâches via une API REST simple construite avec **Express**, **CORS**, **dotenv**, **PostgreSQL**, **MongoDB** et un front minimaliste en **Pug**.
 
 La base de données utilisée est choisie via la variable d’environnement **`DB_CLIENT`** (`postgres` ou `mongo`).
 - Avec **PostgreSQL**, les tâches sont stockées dans une table SQL.
@@ -24,6 +24,7 @@ La base de données utilisée est choisie via la variable d’environnement **`D
   - [Développement](#développement)
   - [Production simple](#production-simple)
 - [API Endpoints](#api-endpoints)
+- [Interface Pug](#interface-pug)
 - [Structure du projet](#structure-du-projet)
 
 ---
@@ -47,6 +48,8 @@ La base de données utilisée est choisie via la variable d’environnement **`D
 - dotenv : gestion des variables d’environnement
 - pg : client officiel PostgreSQL pour Node.js
 - mongoose : ODM pour MongoDB
+- pug : moteur de templates pour le front
+- method-override : permet de simuler DELETE/PUT dans les formulaires HTML
 - nodemon (dev) : rechargement automatique en développement
 
 ---
@@ -196,6 +199,15 @@ Base : http://localhost:3000
 
 ---
 
+### Interface Pug
+
+En plus de l’API JSON, une interface web simple est disponible à la racine `/`.
+- **Affiche la liste des tâches**.
+- **Formulaire d’ajout** : envoie un POST `/tasks`.
+- **Bouton de suppression** : utilise `method-override` pour simuler un DELETE.
+
+---
+
 ### Structure du projet
 
 ```
@@ -211,12 +223,17 @@ Base : http://localhost:3000
 │   │   └── task.js
 │   └── routes/
 │       └── tasks.js
+├── views/
+│   ├── layout.pug
+│   └── index.pug
 └── README.md
 ```
 
-- **server.js** : point d'entrée, configuration Express, middleware, montage des route et démarrage conditionné à la connexion DB.
+- **server.js** : point d'entrée, configuration Express, Pug, middleware, montage des route et démarrage conditionné à la connexion DB.
 - **src/config/db.js** : configuration et connexion PostgreSQL/MongoDB.
-- **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP.
+- **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP/HTML.
 - **src/models/task.js** : classe `Task` (implémentation PostgreSQL ou MongoDB selon `DB_CLIENT`).
-- **src/routes/tasks.js** : routage HTTP pour `/tasks`.  
+- **src/routes/tasks.js** : routage HTTP pour `/tasks`.
+- **views/layout.pug** : layout de base (HTML, head, footer).
+- **views/index.pug** : page principale avec formulaire et liste des tâches.
 - **package.json** : dépendances et scripts.
