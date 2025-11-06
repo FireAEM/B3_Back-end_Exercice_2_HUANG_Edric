@@ -6,6 +6,10 @@ const methodOverride = require('method-override');
 const cors = require('cors');
 const path = require('path');
 
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
 const Task = require('./src/models/task');
 const tasksRouter = require('./src/routes/tasks');
 const { connectToDatabase } = require('./src/config/db');
@@ -37,6 +41,10 @@ app.get('/', async (req, res, next) => {
 
 app.use('/tasks', tasksRouter);
 
+// Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Gestion des erreurs 404
 app.use((req, res) => {
     res.status(404).json({ error: 'Route non trouvée' });
 });
@@ -50,6 +58,7 @@ async function startServer() {
         // Démarrage du serveur uniquement si la DB est OK
         app.listen(PORT, () => {
             console.log(`✅ Serveur démarré sur http://localhost:${PORT}`);
+            console.log(`📖 Documentation Swagger disponible sur http://localhost:${PORT}/api-docs`);
         });
     } catch (err) {
         console.error('❌ Impossible de démarrer le serveur sans connexion à la base de données :', err);

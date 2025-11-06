@@ -1,0 +1,154 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API ToDoList",
+        "version": "1.0.0",
+        "description": "Mini API ToDoList en Node.js (Express, PostgreSQL/MongoDB)."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Serveur local"
+        }
+    ],
+    "paths": {
+        "/tasks": {
+            "get": {
+                "summary": "Récupère toutes les tâches",
+                "tags": [
+                    "Tasks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des tâches",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur interne lors de la récupération"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crée une nouvelle tâche",
+                "tags": [
+                    "Tasks"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Acheter du pain"
+                                    }
+                                },
+                                "required": [
+                                    "title"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tâche créée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Payload invalide"
+                    },
+                    "500": {
+                        "description": "Erreur interne lors de la création"
+                    }
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "delete": {
+                "summary": "Supprime une tâche par ID",
+                "tags": [
+                    "Tasks"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifiant de la tâche (entier pour PostgreSQL, ObjectId pour MongoDB)",
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tâche supprimée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tâche supprimée."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID invalide"
+                    },
+                    "404": {
+                        "description": "Tâche introuvable"
+                    },
+                    "500": {
+                        "description": "Erreur interne lors de la suppression"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Task": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "6530b1f6c0a9a5a5f4c3d2e1"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Acheter du pain"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-11-06T15:30:00Z"
+                    }
+                }
+            }
+        }
+    }
+}
