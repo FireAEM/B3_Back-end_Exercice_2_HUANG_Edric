@@ -25,6 +25,7 @@ La base de données utilisée est choisie via la variable d’environnement **`D
   - [Production simple](#production-simple)
 - [API Endpoints](#api-endpoints)
 - [Interface Pug](#interface-pug)
+- [Documentation Swagger API](#documentation-swagger-api)
 - [Structure du projet](#structure-du-projet)
 
 ---
@@ -50,6 +51,7 @@ La base de données utilisée est choisie via la variable d’environnement **`D
 - mongoose : ODM pour MongoDB
 - pug : moteur de templates pour le front
 - method-override : permet de simuler DELETE/PUT dans les formulaires HTML
+- swagger-ui-express : interface interactive pour documenter et tester l'API avec Swagger
 - nodemon (dev) : rechargement automatique en développement
 
 ---
@@ -208,11 +210,19 @@ En plus de l’API JSON, une interface web simple est disponible à la racine `/
 
 ---
 
+### Documentation Swagger API
+
+La documentation interactive de l’API est disponible grâce à **Swagger UI**.
+Accès à la documentation : http://localhost:3000/api-docs
+
+---
+
 ### Structure du projet
 
 ```
 .
 ├── server.js
+├── swagger.json
 ├── package.json
 ├── src/
 │   ├── config/
@@ -230,6 +240,7 @@ En plus de l’API JSON, une interface web simple est disponible à la racine `/
 ```
 
 - **server.js** : point d'entrée, configuration Express, Pug, middleware, montage des route et démarrage conditionné à la connexion DB.
+- **swagger.json** : description de l’API au format OpenAPI 3.0 (endpoints `/tasks`, schéma `Task`, etc.).
 - **src/config/db.js** : configuration et connexion PostgreSQL/MongoDB.
 - **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP/HTML.
 - **src/models/task.js** : classe `Task` (implémentation PostgreSQL ou MongoDB selon `DB_CLIENT`).
