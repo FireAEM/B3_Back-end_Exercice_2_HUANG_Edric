@@ -7,9 +7,10 @@
 Mini API ToDoList en Node.js organisée selon le modèle MVC.  
 Fonctionnalités : ajout, affichage et suppression de tâches **et gestion des utilisateurs (inscription, connexion, suppression)** via une API REST simple construite avec **Express**, **CORS**, **dotenv**, **PostgreSQL**, **MongoDB** et un front minimaliste en **Pug**.
 
-La base de données utilisée est choisie via la variable d'environnement **`DB_CLIENT`** (`postgres` ou `mongo`).
+La base de données utilisée est choisie via les variables d'environnement DB_TASK et DB_USER (postgres ou mongo).
 - Avec **PostgreSQL**, les tâches et utilisateurs sont stockés dans des tables SQL.
 - Avec **MongoDB**, les tâches et utilisateurs sont stockés dans des collections.
+- Il est possible d’utiliser PostgreSQL pour les tâches et MongoDB pour les utilisateurs (ou inversement) simultanément.
 
 ---
 
@@ -86,8 +87,9 @@ PGPASSWORD={motdepasse}
 # MongoDB
 MONGO_URI=mongodb://127.0.0.1:27017/B3_Back-end_Exercice_2
 
-# Choix du client : "postgres" ou "mongo"
-DB_CLIENT=postgres
+# Choix du client pour chaque entité : "postgres" ou "mongo"
+DB_TASK=postgres
+DB_USER=mongo
 ```
 - **PORT** : port d'écoute du serveur Express (API).
 - **PGHOST** : hôte PostgreSQL (127.0.0.1 en local).
@@ -96,7 +98,8 @@ DB_CLIENT=postgres
 - **PGUSER** : utilisateur PostgreSQL.
 - **PGPASSWORD** : mot de passe de l'utilisateur PostgreSQL.
 - **MONGO_URI** : URI de connexion MongoDB.
-- **DB_CLIENT** : permet de choisir la base de données utilisée (`postgres` ou `mongo`).
+- **DB_TASK** : permet de choisir la base de données utilisée pour les tâches (`postgres` ou `mongo`).
+- **DB_USER** : permet de choisir la base de données utilisée pour les utilisateurs (`postgres` ou `mongo`).
 
 4. Scripts utiles dans package.json (exemple) :
 ```json
@@ -152,7 +155,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 #### Développement
 
-1. Vérifier que `.env` est en place et que `DB_CLIENT` correspond à la base souhaitée.
+1. Vérifier que `.env` est en place et que `DB_TASK` et `DB_USER` correspondent aux bases souhaitées.
 2. Lancer le serveur en mode développement :
 ```bash
 npm run dev
@@ -305,8 +308,8 @@ Accès à la documentation : http://localhost:3000/api-docs
 - **src/config/db.js** : configuration et connexion PostgreSQL/MongoDB.
 - **src/controllers/taskController.js** : logique métier et gestion des réponses HTTP/HTML.
 - **src/controllers/userController.js** : logique métier pour inscription, connexion et suppression d'utilisateurs.
-- **src/models/task.js** : modèle `Task` (implémentation PostgreSQL ou MongoDB selon `DB_CLIENT`).
-- **src/models/user.js** : modèle `User` (implémentation PostgreSQL ou MongoDB selon `DB_CLIENT`, hashage bcrypt, JWT).
+- **src/models/task.js** : modèle `Task` (implémentation PostgreSQL ou MongoDB selon `DB_TASK`).
+- **src/models/user.js** : modèle `User` (implémentation PostgreSQL ou MongoDB selon `DB_USER`, JWT, hashage bcrypt).
 - **src/routes/tasks.js** : routage HTTP pour `/tasks`.
 - **src/routes/users.js** : routage HTTP pour `/users`.
 - **views/layout.pug** : layout de base (HTML, head, footer).
