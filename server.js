@@ -14,7 +14,7 @@ const swaggerDocument = require('./swagger.json');
 const Task = require('./src/models/task');
 const tasksRouter = require('./src/routes/tasks');
 const usersRouter = require('./src/routes/users');
-const { connectToDatabase } = require('./src/config/db');
+const { connectTaskDatabase, connectUserDatabase } = require('./src/config/db');
 
 
 
@@ -55,8 +55,8 @@ app.use((req, res) => {
 // Fonction de démarrage
 async function startServer() {
     try {
-        // Connexion à la base
-        await connectToDatabase();
+        await connectTaskDatabase();
+        await connectUserDatabase();
 
         // Démarrage du serveur uniquement si la DB est OK
         app.listen(PORT, () => {
@@ -64,7 +64,7 @@ async function startServer() {
             console.log(`📖 Documentation Swagger disponible sur http://localhost:${PORT}/api-docs`);
         });
     } catch (err) {
-        console.error('❌ Impossible de démarrer le serveur sans connexion à la base de données :', err);
+        console.error('❌ Impossible de démarrer le serveur sans connexion aux bases de données :', err);
         process.exit(1); // Arrêt du process si la DB n'est pas dispo
     }
 }

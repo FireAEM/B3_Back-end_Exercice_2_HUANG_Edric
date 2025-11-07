@@ -1,5 +1,5 @@
 const { pool, mongoose } = require('../config/db');
-const dbClient = (process.env.DB_CLIENT || 'postgres').toLowerCase();
+const dbClient = (process.env.DB_TASK || 'postgres').toLowerCase();
 
 let TaskModel = null;
 function ensureTaskModel() {

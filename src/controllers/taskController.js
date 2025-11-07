@@ -1,5 +1,5 @@
 const Task = require('../models/task');
-const dbClient = (process.env.DB_CLIENT || 'postgres').toLowerCase();
+const dbTask = (process.env.DB_TASK || 'postgres').toLowerCase();
 
 async function getAll(req, res) {
     try {
@@ -35,7 +35,7 @@ async function deleteTaskHandler(req, res) {
     try {
         const rawId = req.params.id;
 
-        if (dbClient === 'mongo') {
+        if (dbTask === 'mongo') {
             // Validation basique ObjectId (24 hex chars)
             if (!/^[0-9a-fA-F]{24}$/.test(rawId)) {
                 return res.status(400).json({ error: 'ID MongoDB invalide.' });

@@ -32,7 +32,7 @@ async function connectMongo() {
             console.log('MongoDB: déjà connecté');
             return;
         }
-        await mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
+        await mongoose.connect(mongoUri);
         console.log('✅ MongoDB connecté:', mongoUri);
     } catch (err) {
         console.error('❌ Erreur de connexion MongoDB:', err.message || err);
@@ -40,13 +40,22 @@ async function connectMongo() {
     }
 }
 
-// Fonction générique
-async function connectToDatabase() {
-    const client = (process.env.DB_CLIENT || 'postgres').toLowerCase();
+// Connexion pour les Tasks
+async function connectTaskDatabase() {
+    const client = (process.env.DB_TASK || 'postgres').toLowerCase();
     if (client === 'mongo') {
         return connectMongo();
     }
     return connectPostgres();
 }
 
-module.exports = { pool, mongoose, connectToDatabase };
+// Connexion pour les Users
+async function connectUserDatabase() {
+    const client = (process.env.DB_USER || 'postgres').toLowerCase();
+    if (client === 'mongo') {
+        return connectMongo();
+    }
+    return connectPostgres();
+}
+
+module.exports = { pool, mongoose, connectTaskDatabase, connectUserDatabase };

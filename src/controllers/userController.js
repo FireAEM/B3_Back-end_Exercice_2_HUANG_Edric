@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const dbClient = (process.env.DB_CLIENT || 'postgres').toLowerCase();
+const dbUser = (process.env.DB_USER || 'postgres').toLowerCase();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -72,7 +72,7 @@ async function deleteUserHandler(req, res) {
     try {
         const rawId = req.params.id;
 
-        if (dbClient === 'mongo') {
+        if (dbUser === 'mongo') {
             // Validation basique ObjectId (24 hex chars)
             if (!/^[0-9a-fA-F]{24}$/.test(rawId)) {
                 return res.status(400).json({ error: 'ID MongoDB invalide.' });
