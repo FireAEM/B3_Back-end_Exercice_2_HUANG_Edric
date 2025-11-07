@@ -10,8 +10,10 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
+// Models & Routes
 const Task = require('./src/models/task');
 const tasksRouter = require('./src/routes/tasks');
+const usersRouter = require('./src/routes/users');
 const { connectToDatabase } = require('./src/config/db');
 
 
@@ -40,6 +42,7 @@ app.get('/', async (req, res, next) => {
 });
 
 app.use('/tasks', tasksRouter);
+app.use('/users', usersRouter);
 
 // Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -62,7 +65,7 @@ async function startServer() {
         });
     } catch (err) {
         console.error('❌ Impossible de démarrer le serveur sans connexion à la base de données :', err);
-        process.exit(1); // Arrêt du process si la DB n’est pas dispo
+        process.exit(1); // Arrêt du process si la DB n'est pas dispo
     }
 }
 
