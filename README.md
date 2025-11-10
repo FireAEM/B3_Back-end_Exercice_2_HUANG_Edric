@@ -87,6 +87,9 @@ PGPASSWORD={motdepasse}
 # MongoDB
 MONGO_URI=mongodb://127.0.0.1:27017/B3_Back-end_Exercice_2
 
+# Clé JWT
+JWT_SECRET={clé}
+
 # Choix du client pour chaque entité : "postgres" ou "mongo"
 DB_TASK=postgres
 DB_USER=mongo
@@ -98,6 +101,7 @@ DB_USER=mongo
 - **PGUSER** : utilisateur PostgreSQL.
 - **PGPASSWORD** : mot de passe de l'utilisateur PostgreSQL.
 - **MONGO_URI** : URI de connexion MongoDB.
+- **JWT_SECRET** : clé secrète utilisée pour signer les tokens JWT. Doit être une chaîne longue et aléatoire (minimum 16 caractères).
 - **DB_TASK** : permet de choisir la base de données utilisée pour les tâches (`postgres` ou `mongo`).
 - **DB_USER** : permet de choisir la base de données utilisée pour les utilisateurs (`postgres` ou `mongo`).
 
