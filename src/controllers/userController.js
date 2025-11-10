@@ -57,7 +57,7 @@ async function login(req, res) {
                 email: user.email,
                 nom: user.nom
             },
-            process.env.JWT_SECRET || 'secretKey',
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 

@@ -33,7 +33,7 @@ function ensureUserModel() {
                 email: this.email,
                 nom: this.nom
             },
-            process.env.JWT_SECRET || 'secretKey',
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
         this.token = token;
@@ -68,7 +68,7 @@ class User {
                     email: row.email,
                     nom: row.nom
                 },
-                process.env.JWT_SECRET || 'secretKey',
+                process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
             return { id: row.id, nom: row.nom, email: row.email, token };
