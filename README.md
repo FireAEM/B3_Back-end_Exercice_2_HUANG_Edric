@@ -55,6 +55,7 @@ La base de données utilisée est choisie via les variables d'environnement DB_T
 - swagger-ui-express : interface interactive pour documenter et tester l'API avec Swagger
 - jsonwebtoken : génération et validation de tokens JWT
 - bcrypt : hashage sécurisé des mots de passe
+- express-rate-limit : middleware de sécurité pour limiter le nombre de requêtes
 - nodemon (dev) : rechargement automatique en développement
 
 ---
@@ -101,7 +102,7 @@ DB_USER=mongo
 - **PGUSER** : utilisateur PostgreSQL.
 - **PGPASSWORD** : mot de passe de l'utilisateur PostgreSQL.
 - **MONGO_URI** : URI de connexion MongoDB.
-- **JWT_SECRET** : clé secrète utilisée pour signer les tokens JWT. Doit être une chaîne longue et aléatoire (minimum 16 caractères).
+- **JWT_SECRET** : clé secrète utilisée pour signer les tokens JWT. Doit être une chaîne longue et aléatoire (minimum 32 caractères).
 - **DB_TASK** : permet de choisir la base de données utilisée pour les tâches (`postgres` ou `mongo`).
 - **DB_USER** : permet de choisir la base de données utilisée pour les utilisateurs (`postgres` ou `mongo`).
 
